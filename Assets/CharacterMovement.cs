@@ -1,4 +1,5 @@
 using UnityEngine;
+
 [RequireComponent(typeof(Rigidbody))]
 public class CharacterMovement : MonoBehaviour
 {
@@ -7,16 +8,17 @@ public class CharacterMovement : MonoBehaviour
     public bool isGrounded;
 
     private Rigidbody rb;
-    private Transform childTransform;
     private SpriteRenderer spriteRenderer;
+    private bool facingRight = true; // Track the direction the character is facing
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        // Assuming your sprite is a child object, find its Transform.
-        childTransform = transform.Find("Player");
-        // Assuming your sprite has a SpriteRenderer component.
-        spriteRenderer = childTransform.GetComponent<SpriteRenderer>();
+        spriteRenderer = GetComponentInChildren<SpriteRenderer>(); // Get the SpriteRenderer component in children
+        if (spriteRenderer == null)
+        {
+            Debug.LogError("SpriteRenderer not found in children.");
+        }
     }
 
     void OnCollisionStay()
@@ -38,14 +40,22 @@ public class CharacterMovement : MonoBehaviour
             isGrounded = false;
         }
 
-        // Check the direction of movement and flip the child sprite renderer accordingly
-        if (horizontalInput > 0)
+        // Check if the direction has changed and flip the sprite accordingly
+        if (horizontalInput > 0 && !facingRight)
         {
-            spriteRenderer.flipX = false; // Do not flip when moving right.
+            FlipSprite();
         }
-        else if (horizontalInput < 0)
+        else if (horizontalInput < 0 && facingRight)
         {
-            spriteRenderer.flipX = true; // Flip when moving left.
+            FlipSprite();
         }
+    }
+
+    void FlipSprite()
+    {
+        facingRight = !facingRight; // Toggle the direction
+        Vector3 scale = transform.localScale;
+        scale.x *= -1; // Flip the sprite by reversing its x scale
+        transform.localScale = scale;
     }
 }
