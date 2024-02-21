@@ -1,50 +1,83 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class InventoryUI : MonoBehaviour
 {
-    public InventoryManager inventoryManager;
-    public GameObject inventoryItemPrefab;
-    public Transform inventoryPanel;
+    [SerializeField] private GameObject slotPrefab;
+    [SerializeField] private Transform slotsParent;
+    [SerializeField] private InventoryHolder inventoryHolder; // Reference to the InventoryHolder
 
     private void Start()
     {
-        // Subscribe to the InventoryUpdated event
-        inventoryManager.InventoryUpdated += UpdateInventoryUI;
+        if (inventoryHolder == null)
+        {
+            Debug.LogError("InventoryHolder reference is not set in InventoryUI.");
+            return;
+        }
 
-        // Initial update of the inventory UI
-        UpdateInventoryUI();
+        inventoryHolder.InventorySystem.OnInventorySlotChanged += UpdateUI;
+        InitializeUI();
     }
 
     private void OnDestroy()
     {
-        // Unsubscribe from the InventoryUpdated event to avoid memory leaks
-        inventoryManager.InventoryUpdated -= UpdateInventoryUI;
+        if (inventoryHolder != null && inventoryHolder.InventorySystem != null)
+        {
+            inventoryHolder.InventorySystem.OnInventorySlotChanged -= UpdateUI;
+        }
     }
 
-    // Method to update the inventory UI
-    private void UpdateInventoryUI()
+    private void InitializeUI()
     {
-        // Clear the current inventory items in the UI
-        foreach (Transform child in inventoryPanel)
+        ClearUI();
+
+        foreach (InventorySlot slot in inventoryHolder.InventorySystem.InventorySlots)
+        {
+            GameObject slotObject = Instantiate(slotPrefab, slotsParent);
+            UpdateSlotUI(slotObject.GetComponent<Image>(), slot);
+        }
+    }
+
+    private void UpdateUI(InventorySlot slot)
+    {
+        foreach (Transform child in slotsParent)
+        {
+            Image slotImage = child.GetComponent<Image>();
+
+            // Find the child image component
+            if (slotImage != null)
+            {
+                InventorySlotUI slotUI = child.GetComponent<InventorySlotUI>();
+                if (slotUI != null && slotUI.InventorySlot == slot)
+                {
+                    UpdateSlotUI(slotImage, slot);
+                    break;
+                }
+            }
+        }
+    }
+
+    private void UpdateSlotUI(Image slotImage, InventorySlot slot)
+    {
+        if (slot.ItemData != null)
+        {
+            // Set the sprite of the image component to the item's icon
+            slotImage.sprite = slot.ItemData.Icon;
+            slotImage.enabled = true;
+        }
+        else
+        {
+            // If the slot is empty, disable the image component
+            slotImage.sprite = null;
+            slotImage.enabled = false;
+        }
+    }
+
+    private void ClearUI()
+    {
+        foreach (Transform child in slotsParent)
         {
             Destroy(child.gameObject);
-        }
-
-        // Loop through each item in the inventory and instantiate UI for it
-        foreach (InventoryItem item in inventoryManager.inventory)
-        {
-            GameObject newItemUI = Instantiate(inventoryItemPrefab, inventoryPanel);
-            Image itemIcon = newItemUI.GetComponentInChildren<Image>();
-            Text itemNameText = newItemUI.GetComponentInChildren<Text>();
-
-            // Set the sprite icon for the item
-            itemIcon.sprite = item.icon;
-
-            // Set the name text for the item
-            itemNameText.text = item.itemName;
         }
     }
 }
