@@ -37,4 +37,15 @@ public class TitleScreen : MonoBehaviour
             SceneManager.LoadScene(nextSceneIndex);
         }
     }
+
+        public void LoadLastScene()
+    {
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        int lastSceneIndex = currentSceneIndex - 1;
+
+        if (lastSceneIndex < SceneManager.sceneCountInBuildSettings)
+        {
+            SceneManager.LoadScene(lastSceneIndex);
+        }
+    }
 }
