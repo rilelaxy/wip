@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class InventorySystem : MonoBehaviour
 {
-    public int maxInventorySlots = 20;
+    public const int maxInventorySlots = 7; // Fixed number of inventory slots
     public List<Item> inventoryItems = new List<Item>();
 
     // Define delegate for item selection

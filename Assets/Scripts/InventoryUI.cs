@@ -1,15 +1,13 @@
-using System;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class InventoryUI : MonoBehaviour
 {
     public InventorySystem inventorySystem;
-    public Image itemIconImage;
-    public GameObject itemInfoPanel;
+    public Image[] itemIconImages; // Array to hold references to the item icon images
+    public GameObject[] itemInfoPanels; // Array to hold references to the item info panels
 
-    private Item selectedItem;
+    private Item[] selectedItems = new Item[7]; // Array to hold selected items for each slot
 
     // Start is called before the first frame update
     void Start()
@@ -27,25 +25,46 @@ public class InventoryUI : MonoBehaviour
     // Update the item information panel with selected item details
     void UpdateItemInfo(Item item)
     {
-        selectedItem = item;
-        if (item != null)
+        // Find the first available slot for the new item
+        int index = -1;
+        for (int i = 0; i < selectedItems.Length; i++)
         {
-            itemIconImage.sprite = item.itemIcon; // Set the icon image
-            itemInfoPanel.SetActive(true);
+            if (selectedItems[i] == null)
+            {
+                index = i;
+                break;
+            }
         }
-        else
+
+        // If no available slot is found, return
+        if (index == -1)
         {
-            itemInfoPanel.SetActive(false);
+            Debug.LogError("No available slot for item!");
+            return;
         }
+
+        // Set the selected item for the slot
+        selectedItems[index] = item;
+
+        // Update the UI for the slot
+        itemIconImages[index].sprite = item.itemIcon; // Set the icon image
+        itemInfoPanels[index].SetActive(true);
     }
 
     // Method to handle button click to use item
-    public void UseItemButtonClicked()
+    public void UseItemButtonClicked(int index)
     {
-        if (selectedItem != null)
+        if (selectedItems[index] != null)
         {
             // Use the selected item
-            inventorySystem.UseItem(selectedItem);
+            inventorySystem.UseItem(selectedItems[index]);
+
+            // Clear the selected item for the slot
+            selectedItems[index] = null;
+
+            // Update the UI for the slot
+            itemIconImages[index].sprite = null; // Clear the icon image
+            itemInfoPanels[index].SetActive(false);
         }
     }
 }
