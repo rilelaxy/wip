@@ -12,7 +12,6 @@ public class InventoryUI : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        // Subscribe to the event for updating item information
         inventorySystem.OnItemSelected += UpdateItemInfo;
     }
 
@@ -22,7 +21,7 @@ public class InventoryUI : MonoBehaviour
         
     }
 
-    // Update the item information panel with selected item details
+    // Update the item information panel 
     void UpdateItemInfo(Item item)
     {
         // Find the first available slot for the new item
@@ -36,7 +35,7 @@ public class InventoryUI : MonoBehaviour
             }
         }
 
-        // If no available slot is found, return
+        // If no available slot is found return
         if (index == -1)
         {
             Debug.LogError("No available slot for item!");
@@ -46,23 +45,23 @@ public class InventoryUI : MonoBehaviour
         // Set the selected item for the slot
         selectedItems[index] = item;
 
-        // Update the UI for the slot
-        itemIconImages[index].sprite = item.itemIcon; // Set the icon image
+        // Update the UI 
+        itemIconImages[index].sprite = item.itemIcon; // Set icon image
         itemInfoPanels[index].SetActive(true);
     }
 
-    // Method to handle button click to use item
+    // Button click to use item
     public void UseItemButtonClicked(int index)
     {
         if (selectedItems[index] != null)
         {
-            // Use the selected item
+
             inventorySystem.UseItem(selectedItems[index]);
 
             // Clear the selected item for the slot
             selectedItems[index] = null;
 
-            // Update the UI for the slot
+            // Update the UI 
             itemIconImages[index].sprite = null; // Clear the icon image
             itemInfoPanels[index].SetActive(false);
         }

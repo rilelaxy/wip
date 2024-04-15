@@ -19,7 +19,6 @@ public class ItemPickup : MonoBehaviour
         {
             // Pick up the item and add it to the inventory
             inventorySystem.PickUpItem(item);
-            // Optionally, play a sound effect or show a particle effect
             Destroy(gameObject); // Destroy the item GameObject after pickup
         }
     }
