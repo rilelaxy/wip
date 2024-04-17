@@ -3,10 +3,11 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class CharacterMovement : MonoBehaviour
 {
+    public Animator animator;
     public float moveSpeed = 5.0f;
     public float jumpForce = 0.1f;
     public bool isGrounded;
-
+    public bool walking;
     private Rigidbody rb;
     private SpriteRenderer spriteRenderer;
     private bool facingRight = true; // Track the direction the character is facing
@@ -14,7 +15,6 @@ public class CharacterMovement : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        spriteRenderer = GetComponentInChildren<SpriteRenderer>(); // Get the SpriteRenderer component in children
         if (spriteRenderer == null)
         {
             Debug.LogError("SpriteRenderer not found in children.");
@@ -33,6 +33,8 @@ public class CharacterMovement : MonoBehaviour
 
         Vector3 movement = new Vector3(horizontalInput * moveSpeed, rb.velocity.y, verticalInput * moveSpeed);
         rb.velocity = movement;
+        animator.SetFloat("Speed", Mathf.Abs(horizontalInput));
+        
 
         if (Input.GetButtonDown("Jump") && isGrounded)
         {
