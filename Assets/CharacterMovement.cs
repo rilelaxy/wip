@@ -34,6 +34,7 @@ public class CharacterMovement : MonoBehaviour
         Vector3 movement = new Vector3(horizontalInput * moveSpeed, rb.velocity.y, verticalInput * moveSpeed);
         rb.velocity = movement;
         animator.SetFloat("Speed", Mathf.Abs(horizontalInput));
+
         
 
         if (Input.GetButtonDown("Jump") && isGrounded)

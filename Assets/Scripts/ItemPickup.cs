@@ -18,8 +18,9 @@ public class ItemPickup : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             // Pick up the item and add it to the inventory
-            inventorySystem.PickUpItem(item);
             Destroy(gameObject); // Destroy the item GameObject after pickup
+            inventorySystem.PickUpItem(item);
+            
         }
     }
 }
