@@ -10,16 +10,13 @@ public class CharacterMovement : MonoBehaviour
     public bool walking;
     private Rigidbody rb;
     private SpriteRenderer spriteRenderer;
-    private bool facingRight = true; // Track the direction the character is facing
+    private bool facingRight = true; 
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        if (spriteRenderer == null)
-        {
-            Debug.LogError("SpriteRenderer not found in children.");
-        }
     }
+
 
     void OnCollisionStay()
     {
@@ -43,7 +40,6 @@ public class CharacterMovement : MonoBehaviour
             isGrounded = false;
         }
 
-        // Check if the direction has changed and flip the sprite accordingly
         if (horizontalInput > 0 && !facingRight)
         {
             FlipSprite();
@@ -56,9 +52,9 @@ public class CharacterMovement : MonoBehaviour
 
     void FlipSprite()
     {
-        facingRight = !facingRight; // Toggle the direction
+        facingRight = !facingRight; 
         Vector3 scale = transform.localScale;
-        scale.x *= -1; // Flip the sprite by reversing its x scale
+        scale.x *= -1; 
         transform.localScale = scale;
     }
 }
