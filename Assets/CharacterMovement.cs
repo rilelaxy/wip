@@ -31,14 +31,16 @@ public class CharacterMovement : MonoBehaviour
         Vector3 movement = new Vector3(horizontalInput * moveSpeed, rb.velocity.y, verticalInput * moveSpeed);
         rb.velocity = movement;
         animator.SetFloat("Speed", Mathf.Abs(horizontalInput));
+        animator.SetFloat("Speed", Mathf.Abs(verticalInput));
 
         
-
+    {
         if (Input.GetButtonDown("Jump") && isGrounded)
         {
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-            isGrounded = false;
+            animator.SetBool("isJumping", true);
         }
+    }
 
         if (horizontalInput > 0 && !facingRight)
         {
